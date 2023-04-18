@@ -36,6 +36,8 @@ func main() {
 	r := setupRouter()
 
 	r.POST("/activity-groups", activityController.Create)
+	r.GET("/activity-groups", activityController.FindAll)
+	r.GET("/activity-groups/:id", activityController.FindByID)
 
 	port := os.Getenv("PORT")
 	if port == "" {

@@ -7,5 +7,7 @@ import (
 
 type ActivityService interface {
 	Create(activity dto.ActivityCreateDTO) (models.Activity, error)
+	FindAll() ([]models.Activity, error)
+	FindByID(id string) (models.Activity, error)
 	
 }

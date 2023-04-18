@@ -23,7 +23,7 @@ func CreateActivityService(activityRepo repositories.ActivityRepository) service
 func (service *ActivityServiceImpl) Create(activity dto.ActivityCreateDTO) (models.Activity, error) {
 	activityCreate := models.Activity{}
 
-	err := smapping.FillStruct(&activityCreate, smapping.MapFields(&activity))
+	err := smapping.FillStruct(&activityCreate, smapping.MapFields(activity))
 
 	if err != nil {
 		return activityCreate, err
@@ -33,4 +33,12 @@ func (service *ActivityServiceImpl) Create(activity dto.ActivityCreateDTO) (mode
 	fmt.Println(activityCreate)
 
 	return service.activityRepo.Create(activityCreate)
+}
+
+func (service *ActivityServiceImpl) FindAll() ([]models.Activity, error) {
+	return service.activityRepo.FindAll()
+}
+
+func (service *ActivityServiceImpl) FindByID(id string) (models.Activity, error) {
+	return service.activityRepo.FindByID(id)
 }
