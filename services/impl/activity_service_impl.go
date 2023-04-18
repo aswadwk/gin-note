@@ -5,6 +5,9 @@ import (
 	"aswadwk/models"
 	"aswadwk/repositories"
 	"aswadwk/services"
+	"fmt"
+
+	"github.com/mashingan/smapping"
 )
 
 type ActivityServiceImpl struct {
@@ -19,6 +22,15 @@ func CreateActivityService(activityRepo repositories.ActivityRepository) service
 
 func (service *ActivityServiceImpl) Create(activity dto.ActivityCreateDTO) (models.Activity, error) {
 	activityCreate := models.Activity{}
+
+	err := smapping.FillStruct(&activityCreate, smapping.MapFields(&activity))
+
+	if err != nil {
+		return activityCreate, err
+	}
+
+	fmt.Println("Activity Create")
+	fmt.Println(activityCreate)
 
 	return service.activityRepo.Create(activityCreate)
 }
