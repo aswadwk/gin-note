@@ -18,11 +18,17 @@ import (
 var (
 	db *gorm.DB = config.DBConnect()
 
+	// repo
 	activityRepo repositories.ActivityRepository = repoImpl.CreateActivityRepository(db)
+	todoRepo repositories.TodoRepository = repoImpl.CreateTodoRepository(db)
 
+	// service
 	activityService services.ActivityService = serviceImpl.CreateActivityService(activityRepo)
+	todoService services.TodoService = serviceImpl.CreateTodoService(todoRepo)
 
+	// controller
 	activityController controllers.ActivityController = controllers.NewActivityController(activityService)
+	todoController controllers.TodoController = controllers.NewTodoController(todoService)
 )
 
 func main() {
@@ -33,19 +39,25 @@ func main() {
 		panic("Error loading .env file")
 	}
 
-	r := setupRouter()
+	route := setupRouter()
 
-	r.POST("/activity-groups", activityController.Create)
-	r.GET("/activity-groups", activityController.FindAll)
-	r.GET("/activity-groups/:id", activityController.FindByID)
-	r.PATCH("/activity-groups/:id", activityController.UpdateByID)
-	r.DELETE("/activity-groups/:id", activityController.DeleteByID)
+	route.POST("/activity-groups", activityController.Create)
+	route.GET("/activity-groups", activityController.FindAll)
+	route.GET("/activity-groups/:id", activityController.FindByID)
+	route.PATCH("/activity-groups/:id", activityController.UpdateByID)
+	route.DELETE("/activity-groups/:id", activityController.DeleteByID)
+
+	route.POST("/todo-items", todoController.Create)
+	route.GET("/todo-items", todoController.FindAll)
+	route.GET("/todo-items/:id", todoController.FindByID)
+	route.PATCH("/todo-items/:id", todoController.UpdateByID)
+	route.DELETE("/todo-items/:id", todoController.DeleteByID)
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "9000" // Default port if not specified
+		port = "3030" // Default port if not specified
 	}
-	r.Run()
+	route.Run()
 
 }
 
