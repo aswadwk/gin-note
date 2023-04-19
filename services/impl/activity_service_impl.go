@@ -5,7 +5,6 @@ import (
 	"aswadwk/models"
 	"aswadwk/repositories"
 	"aswadwk/services"
-	"fmt"
 
 	"github.com/mashingan/smapping"
 )
@@ -29,9 +28,6 @@ func (service *ActivityServiceImpl) Create(activity dto.ActivityCreateDTO) (mode
 		return activityCreate, err
 	}
 
-	fmt.Println("Activity Create")
-	fmt.Println(activityCreate)
-
 	return service.activityRepo.Create(activityCreate)
 }
 
@@ -41,4 +37,20 @@ func (service *ActivityServiceImpl) FindAll() ([]models.Activity, error) {
 
 func (service *ActivityServiceImpl) FindByID(id string) (models.Activity, error) {
 	return service.activityRepo.FindByID(id)
+}
+
+func (service *ActivityServiceImpl) UpdateByID(id string, activity dto.ActivityUpdateByIDDTO) (models.Activity, error) {
+	activityUpdate := models.Activity{}
+
+	err := smapping.FillStruct(&activityUpdate, smapping.MapFields(activity))
+
+	if err != nil {
+		return activityUpdate, err
+	}
+
+	return service.activityRepo.UpdateByID(id, activityUpdate)
+}
+
+func (service *ActivityServiceImpl) DeleteByID(id string) (int64, error) {
+	return service.activityRepo.DeleteByID(id)
 }

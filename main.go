@@ -38,6 +38,8 @@ func main() {
 	r.POST("/activity-groups", activityController.Create)
 	r.GET("/activity-groups", activityController.FindAll)
 	r.GET("/activity-groups/:id", activityController.FindByID)
+	r.PATCH("/activity-groups/:id", activityController.UpdateByID)
+	r.DELETE("/activity-groups/:id", activityController.DeleteByID)
 
 	port := os.Getenv("PORT")
 	if port == "" {

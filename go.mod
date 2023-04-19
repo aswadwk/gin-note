@@ -4,7 +4,8 @@ go 1.16
 
 require (
 	github.com/bytedance/sonic v1.8.7 // indirect
-	github.com/gin-gonic/gin v1.9.0 // indirect
+	github.com/gin-gonic/gin v1.9.0
+	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-playground/validator/v10 v10.12.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/joho/godotenv v1.5.1

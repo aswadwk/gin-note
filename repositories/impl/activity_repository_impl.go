@@ -49,3 +49,24 @@ func (repository *ActivityRepositoryImpl) FindByID(id string) (models.Activity, 
 
 	return activity, nil
 }
+
+func (repository *ActivityRepositoryImpl) UpdateByID(id string, activity models.Activity) (models.Activity, error) {
+	// return models.Activity{}, nil
+	db := repository.db.Where("id = ?", id).Updates(&activity)
+
+	if db.Error != nil {
+		return activity, db.Error
+	}
+
+	return activity, nil
+}
+
+func (repository *ActivityRepositoryImpl) DeleteByID(id string) (int64, error) {
+	db := repository.db.Where("id = ?", id).Delete(&models.Activity{})
+
+	if db.Error != nil {
+		return 0, db.Error
+	}
+
+	return db.RowsAffected, nil
+}
