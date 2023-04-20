@@ -14,17 +14,22 @@ import (
 func DBConnect() *gorm.DB {
 	errEnv := godotenv.Load()
 	if errEnv != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Error loading .env file config")
 	}
 
 	dbHost := os.Getenv("MYSQL_HOST")
-	dbPort := os.Getenv("MYSQL_PORT")
 	dbName := os.Getenv("MYSQL_DBNAME")
 	dbUser := os.Getenv("MYSQL_USER")
 	dbPass := os.Getenv("MYSQL_PASSWORD")
 
+	dbPort := os.Getenv("MYSQL_PORT")
+	if dbPort == "" {
+		dbPort = "3306" // Default port if not specified
+	}
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbUser, dbPass, dbHost, dbPort, dbName)
+	fmt.Println("config")
+	fmt.Println(dsn)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {

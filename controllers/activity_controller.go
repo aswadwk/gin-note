@@ -4,6 +4,7 @@ import (
 	"aswadwk/dto"
 	"aswadwk/helpers"
 	"aswadwk/services"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -32,7 +33,8 @@ func NewActivityController(activityService services.ActivityService) ActivityCon
 func (c *activityController) Create(ctx *gin.Context) {
 	activityCreateDTO := dto.ActivityCreateDTO{}
 
-	errDto := ctx.ShouldBind(&activityCreateDTO)
+	fmt.Println(ctx.Request.Body)
+	errDto := ctx.BindJSON(&activityCreateDTO)
 	if errDto != nil {
 		res := helpers.ResponseError("Bad Request", "Failed to bind request", gin.H{})
 
