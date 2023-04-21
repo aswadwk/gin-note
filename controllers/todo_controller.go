@@ -34,6 +34,13 @@ func (c *todoController) Create(ctx *gin.Context) {
 	todoCreateDTO := dto.TodoCreateDTO{}
 
 	errDto := ctx.ShouldBind(&todoCreateDTO)
+
+	if todoCreateDTO.ActivityGroupID == 0 {
+		res := helpers.ResponseError("Bad Request", "activity_group_id cannot be null", gin.H{})
+		ctx.JSON(http.StatusBadRequest, res)
+		return
+	}
+
 	if errDto != nil {
 		res := helpers.ResponseError("Bad Request", "Failed to bind request", gin.H{})
 
@@ -42,7 +49,7 @@ func (c *todoController) Create(ctx *gin.Context) {
 	}
 
 	if(todoCreateDTO.Title == "") {
-		res := helpers.ResponseError("Bad Request", "Title cannot be null", gin.H{})
+		res := helpers.ResponseError("Bad Request", "title cannot be null", gin.H{})
 		ctx.JSON(http.StatusBadRequest, res)
 		return
 	}
@@ -57,7 +64,7 @@ func (c *todoController) Create(ctx *gin.Context) {
 	}
 
 	res := helpers.ResponseSuccess("Success", "Success", newTodo)
-	ctx.JSON(http.StatusOK, res)
+	ctx.JSON(http.StatusCreated, res)
 }
 
 func (c *todoController) FindAll(ctx *gin.Context) {
@@ -89,9 +96,9 @@ func (c *todoController) FindByID(ctx *gin.Context) {
 	todo, err := c.todoService.FindByID(id)
 
 	if err != nil {
-		res := helpers.ResponseError("Failed", "Todo with ID "+id+" not found", gin.H{})
+		res := helpers.ResponseError("Not Found", "Todo with ID "+id+" Not Found", gin.H{})
 
-		ctx.JSON(http.StatusBadRequest, res)
+		ctx.JSON(http.StatusNotFound, res)
 		return
 	}
 
@@ -113,7 +120,7 @@ func (c *todoController) UpdateByID(ctx *gin.Context) {
 	}
 
 	if(todoUpdateDTO.Title == "") {
-		res := helpers.ResponseError("Bad Request", "Title cannot be null", gin.H{})
+		res := helpers.ResponseError("Bad Request", "title cannot be null", gin.H{})
 		ctx.JSON(http.StatusBadRequest, res)
 		return
 	}
@@ -121,8 +128,8 @@ func (c *todoController) UpdateByID(ctx *gin.Context) {
 	_, err := c.todoService.FindByID(id)
 
 	if err != nil {
-		res := helpers.ResponseError("Failed", "Todo with ID "+id+" not found", gin.H{})
-		ctx.JSON(http.StatusBadRequest, res)
+		res := helpers.ResponseError("Not Found", "Todo with ID "+id+" Not Found", gin.H{})
+		ctx.JSON(http.StatusNotFound, res)
 		return
 	}
 
@@ -142,7 +149,15 @@ func (c *todoController) UpdateByID(ctx *gin.Context) {
 func (c *todoController) DeleteByID(ctx *gin.Context) {
 	id := ctx.Param("id")
 
-	_, err := c.todoService.DeleteByID(id)
+	_, err := c.todoService.FindByID(id)
+
+	if err != nil {
+		res := helpers.ResponseError("Not Found", "Todo with ID "+id+" Not Found", gin.H{})
+		ctx.JSON(http.StatusNotFound, res)
+		return
+	}
+
+	c.todoService.DeleteByID(id)
 
 	if err != nil {
 		res := helpers.ResponseError("Failed", "Something went wrong", gin.H{})

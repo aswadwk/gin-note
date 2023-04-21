@@ -49,7 +49,7 @@ func (c *activityController) Create(ctx *gin.Context) {
 	}
 
 	if(activityCreateDTO.Title == "") {
-		res := helpers.ResponseError("Bad Request", "Title cannot be null", gin.H{})
+		res := helpers.ResponseError("Bad Request", "title cannot be null", gin.H{})
 		ctx.JSON(http.StatusBadRequest, res)
 		return
 	}
@@ -87,7 +87,7 @@ func (c *activityController) FindByID(ctx *gin.Context) {
 	activity, err := c.activityService.FindByID(id)
 
 	if err != nil {
-		res := helpers.ResponseError("Not Found", "Activity with ID "+id+" not found", gin.H{})
+		res := helpers.ResponseError("Not Found", "Activity with ID "+id+" Not Found", gin.H{})
 		ctx.JSON(http.StatusNotFound, res)
 		return
 	}
@@ -127,12 +127,12 @@ func (c *activityController) DeleteByID(ctx *gin.Context) {
 	_, err := c.activityService.FindByID(id)
 
 	if err != nil {
-		res := helpers.ResponseError("Not Found", "Activity with ID "+id+" not found", gin.H{})
+		res := helpers.ResponseError("Not Found", "Activity with ID "+id+" Not Found", gin.H{})
 		ctx.JSON(http.StatusNotFound, res)
 		return
 	}
 
-	deleteActivity, err := c.activityService.DeleteByID(id)
+	c.activityService.DeleteByID(id)
 
 	if err != nil {
 		res := helpers.ResponseError("Server Error", "Something went wrong", gin.H{})
@@ -141,6 +141,6 @@ func (c *activityController) DeleteByID(ctx *gin.Context) {
 		return
 	}
 
-	res := helpers.ResponseSuccess("Success", "Success", deleteActivity)
+	res := helpers.ResponseSuccess("Success", "Success", gin.H{})
 	ctx.JSON(200, res)
 }
