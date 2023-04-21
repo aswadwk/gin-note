@@ -1,34 +1,29 @@
-FROM golang:1.19-alpine AS build_base
+# Gunakan golang:latest sebagai base image
+FROM golang:latest
 
-RUN apk add --no-cache git
-
-# Set the Current Working Directory inside the container
-WORKDIR /tmp/go-note
-
-# We want to populate the module cache based on the go.{mod,sum} files.
-COPY go.mod .
-COPY go.sum .
-
-RUN go mod download
-
-COPY . .
-
-# Unit tests
-RUN CGO_ENABLED=0 go test -v
-# Build the Go app
-RUN go build -o ./out/go-note .
-
-# Start fresh from a smaller image
-FROM alpine:3.9 
-RUN apk add ca-certificates
-
+# Tetapkan direktori kerja default
 WORKDIR /app
 
-COPY --from=build_base /tmp/go-note/out/go-note /app/go-note
-COPY --from=build_base /tmp/go-note/.env /app/.env
+# Salin go.mod dan go.sum untuk mendownload dependensi
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
 
-# This container exposes port 8080 to the outside world
+# Salin kode sumber aplikasi
+COPY . .
+
+# Kompilasi aplikasi
+RUN go build -o app .
+
+# Gunakan argumen untuk variabel lingkungan
+ARG MYSQL_HOST
+ARG MYSQL_USER
+ARG MYSQL_PASSWORD
+ARG MYSQL_DBNAME
+ENV MYSQL_HOST=$MYSQL_HOST MYSQL_USER=$MYSQL_USER MYSQL_PASSWORD=$MYSQL_PASSWORD MYSQL_DBNAME=$MYSQL_DBNAME
+
+# Tetapkan port default
 EXPOSE 3030
 
-# Run the binary program produced by `go install`
-CMD ["/app/go-note"]
+# Tetapkan perintah default
+CMD ["./app"]

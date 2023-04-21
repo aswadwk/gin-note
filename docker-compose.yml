@@ -14,7 +14,7 @@ services:
       - fullstack
 
   fullstack-mysql:
-    image: mysql:5.7
+    image: mysql:8.0
     container_name: full_db_mysql
     ports:
       - 3306:3306
@@ -26,22 +26,6 @@ services:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
     volumes:
       - database_mysql:/var/lib/mysql
-    networks:
-      - fullstack
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin_container
-    depends_on:
-      - fullstack-mysql
-    environment:
-      - PMA_HOST=fullstack-mysql # Note the "fullstack-mysql". Must be the name of the what you used as the mysql service.
-      - PMA_USER=${MYSQL_USER}
-      - PMA_PORT=${MYSQL_PORT}
-      - PMA_PASSWORD=${MYSQL_PASSWORD}
-    ports:
-      - 9090:80
-    restart: always
     networks:
       - fullstack
 
