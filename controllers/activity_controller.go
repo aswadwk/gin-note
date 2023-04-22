@@ -4,7 +4,6 @@ import (
 	"aswadwk/dto"
 	"aswadwk/helpers"
 	"aswadwk/services"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -33,7 +32,6 @@ func NewActivityController(activityService services.ActivityService) ActivityCon
 func (c *activityController) Create(ctx *gin.Context) {
 	activityCreateDTO := dto.ActivityCreateDTO{}
 
-	fmt.Println(ctx.Request.Body)
 	errDto := ctx.BindJSON(&activityCreateDTO)
 	if errDto != nil {
 		res := helpers.ResponseError("Bad Request", "Failed to bind request", gin.H{})
@@ -105,6 +103,14 @@ func (c *activityController) UpdateByID(ctx *gin.Context) {
 		res := helpers.ResponseError("Bad Request", err.Error(), gin.H{})
 
 		ctx.JSON(http.StatusBadRequest, res)
+		return
+	}
+
+	_, err := c.activityService.FindByID(id)
+
+	if err != nil {
+		res := helpers.ResponseError("Not Found", "Activity with ID "+id+" Not Found", gin.H{})
+		ctx.JSON(http.StatusNotFound, res)
 		return
 	}
 

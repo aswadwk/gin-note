@@ -3,7 +3,6 @@ package repositories
 import (
 	"aswadwk/dto"
 	"aswadwk/models"
-	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -24,8 +23,6 @@ func (repository *TodoRepositoryImpl) Create(todo models.Todo) (models.Todo, err
 		return todo, err
 	}
 
-	fmt.Println("todo created")
-	fmt.Println(todo.Title)
 	return todo, nil
 }
 
@@ -59,13 +56,27 @@ func (repository *TodoRepositoryImpl) FindByID(id string) (models.Todo, error) {
 }
 
 func (repository *TodoRepositoryImpl) UpdateByID(id string, todo models.Todo) (models.Todo, error) {
-	err := repository.db.Where("id = ?", id).Updates(&todo).Error
-	if err != nil {
-		return todo, err
+	var todoUpdated models.Todo
+
+	result := repository.db.Model(&todoUpdated).Where("id = ?", id).Updates(&todo)
+
+	if result.Error != nil {
+		return todoUpdated, result.Error
 	}
 
-	return todo, nil
+	if result.RowsAffected == 0 {
+		return todoUpdated, gorm.ErrRecordNotFound
+	}
+
+	err := repository.db.First(&todoUpdated, id).Error
+	if err != nil {
+		return todoUpdated, err
+	}
+
+	return todoUpdated, nil
 }
+
+
 
 func (repository *TodoRepositoryImpl) DeleteByID(id string) (bool, error) {
 	err := repository.db.Delete(&models.Todo{}, id).Error

@@ -33,7 +33,7 @@ func (c *todoController) Create(ctx *gin.Context) {
 	
 	todoCreateDTO := dto.TodoCreateDTO{}
 
-	errDto := ctx.ShouldBind(&todoCreateDTO)
+	errDto := ctx.BindJSON(&todoCreateDTO)
 
 	if todoCreateDTO.ActivityGroupID == 0 {
 		res := helpers.ResponseError("Bad Request", "activity_group_id cannot be null", gin.H{})
@@ -118,13 +118,6 @@ func (c *todoController) UpdateByID(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, res)
 		return
 	}
-
-	if(todoUpdateDTO.Title == "") {
-		res := helpers.ResponseError("Bad Request", "title cannot be null", gin.H{})
-		ctx.JSON(http.StatusBadRequest, res)
-		return
-	}
-
 	_, err := c.todoService.FindByID(id)
 
 	if err != nil {

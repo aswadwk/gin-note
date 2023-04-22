@@ -51,14 +51,24 @@ func (repository *ActivityRepositoryImpl) FindByID(id string) (models.Activity, 
 }
 
 func (repository *ActivityRepositoryImpl) UpdateByID(id string, activity models.Activity) (models.Activity, error) {
-	// return models.Activity{}, nil
-	db := repository.db.Where("id = ?", id).Updates(&activity)
+	var activityUpdate models.Activity
 
-	if db.Error != nil {
-		return activity, db.Error
+	result := repository.db.Model(&activityUpdate).Where("id = ?", id).Updates(&activity)
+
+	if result.Error != nil {
+		return activityUpdate, result.Error
 	}
 
-	return activity, nil
+	if result.RowsAffected == 0 {
+		return activityUpdate, gorm.ErrRecordNotFound
+	}
+
+	err := repository.db.First(&activityUpdate, id).Error
+	if err != nil {
+		return activityUpdate, err
+	}
+
+	return activityUpdate, nil
 }
 
 func (repository *ActivityRepositoryImpl) DeleteByID(id string) (int64, error) {
