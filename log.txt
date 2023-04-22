@@ -1,0 +1,23 @@
+The push refers to repository [docker.io/aswadwk/gin-note]
+The push refers to repository [docker.io/aswadwk/gin-note]
+f9098149990d: Preparing
+68089ca1b85d: Preparing
+62b197df0af1: Preparing
+aa2f9881d1fe: Preparing
+f91d5d434e12: Preparing
+93ae7a510788: Preparing
+13e356c3ad53: Preparing
+fbc2e8923001: Preparing
+0c074c40f50a: Preparing
+b86f260e173a: Preparing
+6a1ebb98b0dc: Preparing
+24b48387f467: Preparing
+ae56c0c5405b: Preparing
+0c074c40f50a: Waiting
+b86f260e173a: Waiting
+6a1ebb98b0dc: Waiting
+93ae7a510788: Waiting
+24b48387f467: Waiting
+ae56c0c5405b: Waiting
+13e356c3ad53: Waiting
+fbc2e8923001: Waiting
